@@ -13,19 +13,16 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
 app.register_blueprint(app_views)
 
-@app_views.route('/status')
-def status():
-    return jsonify(status="OK")
+
+@app.route("/")
+def hello():
+    return ("hello")
 
 
 @app.teardown_appcontext
 def teardown_db(exception):
     storage.close()
 
-
-"""
-create a variable app, instance of Flask
-"""
 
 
 
