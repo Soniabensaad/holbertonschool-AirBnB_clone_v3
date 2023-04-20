@@ -14,8 +14,8 @@ from models import amenity, city, place, review, state, user
 def api_status():
     return jsonify({"status": "OK"})
 
-@app_views.route('/stats', strict_slashes=False)
-def count():
+@app_views.route('/api/v1/stats', strict_slashes=False)
+def stats():
     """Returns the number of each object by type"""
     counts = {
         'amenities': storage.count('Amenity'),
