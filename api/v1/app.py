@@ -13,10 +13,9 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
 app.register_blueprint(app_views)
 
-
-@app.route("/")
-def hello():
-    return ("hello")
+@app_views.route('/status')
+def status():
+    return jsonify(status="OK")
 
 
 @app.teardown_appcontext
