@@ -81,3 +81,10 @@ class DBStorage:
             return self.__session[cls][id]
         else:
             return None
+        
+    def count(self, cls=None):
+        """count the number of objects in storage"""
+        if cls is None:
+            return len(self.__session)
+        else:
+            return sum(isinstance(o, cls) for o in self.__session)
