@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+"""
+create a variable app, instance of Flask
+"""
 from flask import Blueprint
 from api.v1.views.index import *
 """mport Blueprint from flask doc"""

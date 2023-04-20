@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+"""create a variable app, instance of Flask
+"""
 import os
 from flask import Flask
 from models import storage
