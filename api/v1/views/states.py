@@ -56,22 +56,19 @@ def post():
 
 @app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
 def put(state_id):
+    data = request.get_json()
     states = storage.all(State)
     id = f"State.{state_id}"
     if id not in states:
         abort(404)
-
+    if not data:
+        abort(400, "Not a JSON")
     state = states[id]
-    s = state.to_dict()
-    try:
-        data = request.get_json()
-        if not data:
-            abort(400, "Not a JSON")
-        for a in data:
-            if a not in ["id", "created_at", "updated_at"]:
-                s[a] = data[a]
+    s=state.__dict__
+    for a in data:
+        if a not in ["id", "created_at",
+                     "updated_at"]:
+            s[a] = data[a]
         storage.save()
-        return jsonify(s), 200
-    except:
-        abort(400, "Invalid JSON")
+    return jsonify(s, 200)
     
