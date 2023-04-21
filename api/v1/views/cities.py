@@ -22,7 +22,7 @@ def cities(state_id):
         ci = s.to_dict()
         if "state_id" in ci:
             if ci["state_id"] == state_id:
-                s.append(s.to_dict())
+                list.append(s.to_dict())
     return jsonify(list)
 
 
@@ -61,7 +61,7 @@ def post_city(state_id):
         abort(400, 'Not a JSON')
     if 'name' not in data:
         abort(400, 'Missing name')
-    city = City(name=data['name'])
+    city = City(name=data['name'], state_id=state_id)
     storage.new(city)
     storage.save()
     return jsonify(city.to_dict()), 201
@@ -83,4 +83,4 @@ def put_city(city_id):
                      "updated_at"]:
             j[d] = data[d]
     storage.save()
-    return jsonify(j.to_dict()), 200
+    return jsonify(j), 200
