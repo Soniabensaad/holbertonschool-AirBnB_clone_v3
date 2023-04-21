@@ -65,7 +65,7 @@ def put(state_id):
     if not data:
         abort(400, 'Not a JSON')
     i = states[id]
-    j= i.__dict__
+    j = i.__dict__
     for d in data:
         if i not in ["id", "created_at",
                      "updated_at"]:
