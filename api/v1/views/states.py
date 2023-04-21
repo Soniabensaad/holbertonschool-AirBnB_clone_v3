@@ -22,10 +22,11 @@ def status():
 @app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
 def get_state(state_id):
     """Retrieves a State object"""
-    state = storage.get(State, state_id)
-    if state is None:
+    states = storage.all(State)
+    id = f"State.{state_id}"
+    if id not in states:
         abort(404)
-    
+    state = states[id]
     return jsonify(state.to_dict())
 
 
@@ -33,10 +34,10 @@ def get_state(state_id):
                  strict_slashes=False)
 def delete_state(state_id):
     states = storage.all(State)
-    key = "State."+state_id
-    if key not in states:
+    id = f"State.{state_id}"
+    if id not in states:
         abort(404)
-    a = states[key]
-    storage.delete(a)
+    state = states[id]
+    storage.delete(state)
     storage.save()
     return jsonify({}), 200
