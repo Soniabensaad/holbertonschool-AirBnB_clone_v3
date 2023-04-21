@@ -30,12 +30,7 @@ def get(self, state_id):
 @app_views.route('/states/<state_id>', methods=['DELETE'],
                  strict_slashes=False)
 def delete(self, state_id):
-    """delete one by id"""
-    state = storage.get("State", str(state_id))
-    if state is None:
-        abort(404)
-    
-    storage.delete(state)
-    storage.save()
-    return jsonify({}), 200
+    state = State.query.get_or_404(state_id)
+    state.delete()
+    return '', 200
     
