@@ -20,13 +20,11 @@ def get(self, state_id):
                  strict_slashes=False)
 def delete(self, state_id):
     """delete one by id"""
-    state = State.query.get_or_404(state_id)
-    states = State.query.all()
-    if state not in states:
+    state = storage.get(State, state_id)
+    if state is None:
         abort(404)
     else:
         storage.delete(state)
         storage.save()
-    return jsonify({}), 200
-
+        return jsonify({}), 200
     
