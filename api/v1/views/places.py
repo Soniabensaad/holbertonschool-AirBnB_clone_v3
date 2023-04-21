@@ -82,7 +82,7 @@ def put_place(place_id):
     """Updates a Place object"""
     place = storage.all(Place)
     id = f"Place.{place_id}"
-    if place is None:
+    if id not in place:
         abort(404)
     data = request.get_json()
     if not data:
