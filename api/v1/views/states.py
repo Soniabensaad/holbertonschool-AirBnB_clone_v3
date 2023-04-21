@@ -64,11 +64,11 @@ def put(state_id):
     if not data:
         abort(400, "Not a JSON")
     state = states[id]
-    s=state.__dict__
+    state_d = state.__dict__
     for a in data:
         if a not in ["id", "created_at",
                      "updated_at"]:
-            s[a] = data[a]
+            state_d[a] = data[a]
         storage.save()
-    return jsonify(s, 200)
+    return jsonify(state_d.to_dict()), 200
     
