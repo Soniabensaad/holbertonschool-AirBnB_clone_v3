@@ -22,12 +22,11 @@ def status():
 @app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
 def get_state(state_id):
     """Retrieves a State object"""
-    states = storage.all(State)
-    k=State.query.get(state_id)
-    if k not in states:
+    state = storage.get(State, state_id)
+    if state is None:
         abort(404)
-    v = states[k]
-    return jsonify(v.to_dict())
+    
+    return jsonify(state.to_dict())
 
 
 @app_views.route('/states/<state_id>', methods=['DELETE'],
