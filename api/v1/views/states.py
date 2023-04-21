@@ -20,11 +20,11 @@ def get(self, state_id):
                  strict_slashes=False)
 def delete(self, state_id):
     """delete one by id"""
-    state = storage.get(State, state_id)
+    state = storage.get("State", str(state_id))
     if state is None:
         abort(404)
-    else:
-        storage.delete(state)
-        storage.save()
-        return jsonify({}), 200
+    
+    storage.delete(state)
+    storage.save()
+    return jsonify({}), 200
     
