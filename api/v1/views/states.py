@@ -70,6 +70,5 @@ def put(state_id):
         if i not in ["id", "created_at",
                      "updated_at"]:
             i[d] = data[d]
-            storage.save()
     storage.save()
     return jsonify(j.to_dict()), 200
