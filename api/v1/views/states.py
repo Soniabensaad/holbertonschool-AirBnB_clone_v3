@@ -6,6 +6,17 @@ from flask import Flask, jsonify,  request, abort
 from models import  storage
 from models.state import State
 import models
+
+@app_views.route('/states', methods=['GET'], strict_slashes=False)
+def getstate():
+    """retrieve all:"""
+    state_list = []
+    state_obj = storage.all("State")
+    for obj in state_obj.values():
+        state_list.append(obj.to_json())
+
+    return jsonify(state_list)
+    
 @app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
 def get(self, state_id):
     """retrieve one object:"""
