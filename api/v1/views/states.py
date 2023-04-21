@@ -2,8 +2,8 @@
 """Create a new view for State objects"""
 
 from api.v1.views import app_views
-from flask import Flask, jsonify,  request
-from models import storage
+from flask import Flask, jsonify,  request, abort
+from models import  storage
 from models.state import State
 import models
 @app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
@@ -21,7 +21,12 @@ def get(self, state_id):
 def delete(self, state_id):
     """delete one by id"""
     state = State.query.get_or_404(state_id)
-    state.delete()
+    states = State.query.all()
+    if state not in states:
+        abort(404)
+    else:
+        storage.delete(state)
+        storage.save()
     return jsonify({}), 200
 
     
