@@ -10,7 +10,7 @@ import models
 
 
 @app_views.route('/states',
-                  methods=['GET'], strict_slashes=False)
+ methods=['GET'], strict_slashes=False)
 def status():
     list = []
     states = storage.all(State).values()
