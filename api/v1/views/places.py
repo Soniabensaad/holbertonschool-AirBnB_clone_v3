@@ -13,64 +13,64 @@ from models.user import User
 
 @app_views.route('/cities/<city_id>/places',
                  methods=['GET'], strict_slashes=False)
-def place_c(city_id):
-    list = []
+def place1(city_id):
+    slist = []
     states = storage.all(City)
-    id = f"City.{city_id}"
-    if id  not in states:
+    key = "City."+city_id
+    if key not in states:
         abort(404)
     city = storage.all(Place).values()
-    for s in city:
-        sity = s.to_dict()
-        if "city_id" in sity:
-            if sity["city_id"] == city_id:
-                list.append(s.to_dict())
-    return jsonify(list)
+    for stat in city:
+        pp = stat.to_dict()
+        if "city_id" in pp:
+            if pp["city_id"] == city_id:
+                slist.append(stat.to_dict())
+    return jsonify(slist)
 
 
 @app_views.route('/places/<place_id>', methods=['GET'], strict_slashes=False)
-def place_p(place_id):
+def place2(place_id):
     """Retrieves a city object"""
     city = storage.all(Place)
-    id = f"Place.{place_id}"
-    if id  not in city:
+    key = "Place."+place_id
+    if key not in city:
         abort(404)
-    c = city[id]
-    return jsonify(c.to_dict())
+    a = city[key]
+    return jsonify(a.to_dict())
 
 
 @app_views.route('/places/<place_id>',
                  methods=['DELETE'], strict_slashes=False)
-def delete(place_id):
+def place3(place_id):
     city = storage.all(Place)
-    id = f"Place.{place_id}"
-    if id not in city:
+    key = "Place."+place_id
+    if key not in city:
         abort(404)
-    d = city[id]
-    storage.delete(d)
+    a = city[key]
+    storage.delete(a)
     storage.save()
     return jsonify({}), 200
 
 
 @app_views.route('/cities/<city_id>/places',
                  methods=['POST'], strict_slashes=False)
-def post(city_id):
+def place4(city_id):
     states = storage.all(City)
-    id = f"City.{city_id}"
-    if id not in states:
+    key = "City."+city_id
+    if key not in states:
         abort(404)
-    data = request.get_json()
-    if not data:
+    js = request.get_json()
+    if not js:
         abort(400, 'Not a JSON')
-    if 'user_id' not in data:
+    if 'user_id' not in js:
         abort(400, 'Missing user_id')
-    if 'name' not in data:
+    if 'name' not in js:
         abort(400, 'Missing name')
     user = storage.all(User)
-    id = f"User.{data['user_id']}"
-    if id not in user:
+    key = "User."+js['user_id']
+    if key not in user:
         abort(404)
-    city = Place(**data)
+    city = Place(**js)
     storage.new(city)
     storage.save()
     return jsonify(city.to_dict()), 201
@@ -79,17 +79,17 @@ def post(city_id):
 @app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
 def place5(place_id):
     city = storage.all(Place)
-    id = f"place.{place_id}"
-    if id not in city:
+    key = "Place."+place_id
+    if key not in city:
         abort(404)
-    data = request.get_json()
-    if not data:
+    js = request.get_json()
+    if not js:
         abort(400, 'Not a JSON')
-    p = city[id]
-    x = p.__dict__
-    for i in data:
+    a = city[key]
+    m = a.__dict__
+    for i in js:
         if i not in ["id", "created_at",
                      "updated_at"]:
-            x[i] = data[i]
+            m[i] = js[i]
     storage.save()
-    return jsonify(x.to_dict()), 200
+    return jsonify(m.to_dict()), 200
