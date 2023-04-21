@@ -1,88 +1,86 @@
 #!/usr/bin/python3
 """
-Defines the RESTful API actions for the City object.
+create a new view for City
 """
-
-from models.city import City
-from models.state import State
-from models import storage
 from api.v1.views import app_views
-from flask import jsonify, abort, request
+from flask import Flask, jsonify, abort, request
+from models import storage
+from models.state import State
+from models.city import City
 
 
-@app_views.route('/states/<state_id>/cities', methods=['GET'],
-                 strict_slashes=False)
-def get_cities_by_state(state_id):
-    """
-    Retrieves the list of all City objects of a State
-    """
-    state = storage.get(State, state_id)
-    if state is None:
+@app_views.route('/states/<state_id>/cities',
+                 methods=['GET'], strict_slashes=False)
+def cities(state_id):
+    list = []
+    states = storage.all(State)
+    id = f"State.{state_id}"
+    if id not in states:
         abort(404)
-    cities = [city.to_dict() for city in state.cities]
-    return jsonify(cities)
+    city = storage.all(City).values()
+    for s in city:
+        ci = s.to_dict()
+        if "state_id" in ci:
+            if ci["state_id"] == state_id:
+                list.append(s.to_dict())
+    return jsonify(list)
 
 
 @app_views.route('/cities/<city_id>', methods=['GET'], strict_slashes=False)
 def get_city(city_id):
-    """
-    Retrieves a City object
-    """
-    city = storage.get(City, city_id)
-    if city is None:
+    """Retrieves a city object"""
+    city = storage.all(City)
+    id = f"City.{city_id}"
+    if id not in city:
         abort(404)
-    return jsonify(city.to_dict())
+    sity = city[id]
+    return jsonify(sity.to_dict())
 
 
-@app_views.route('/cities/<city_id>', methods=['DELETE'],
-                 strict_slashes=False)
+@app_views.route('/cities/<city_id>', methods=['DELETE'], strict_slashes=False)
 def delete_city(city_id):
-    """
-    Deletes a City object
-    """
-    city = storage.get(City, city_id)
-    if city is None:
+    city = storage.all(City)
+    id = f"City.{city_id}"
+    if id not in city:
         abort(404)
-    storage.delete(city)
+    de = city[id]
+    storage.delete(de)
     storage.save()
     return jsonify({}), 200
 
 
-@app_views.route('/states/<state_id>/cities', methods=['POST'],
-                 strict_slashes=False)
-def create_city(state_id):
-    """
-    Creates a City object
-    """
-    state = storage.get(State, state_id)
-    if state is None:
+@app_views.route('/states/<state_id>/cities',
+                 methods=['POST'], strict_slashes=False)
+def post_city(state_id):
+    states = storage.all(State)
+    id = f"State.{state_id}"
+    if id not in states:
         abort(404)
-    req_json = request.get_json()
-    if req_json is None:
+    data = request.get_json()
+    if not data:
         abort(400, 'Not a JSON')
-    if 'name' not in req_json:
+    if 'name' not in data:
         abort(400, 'Missing name')
-    req_json['state_id'] = state_id
-    city = City(**req_json)
+    city = City(name=data['name'], state_id=state_id)
     storage.new(city)
     storage.save()
     return jsonify(city.to_dict()), 201
 
 
 @app_views.route('/cities/<city_id>', methods=['PUT'], strict_slashes=False)
-def update_city(city_id):
-    """
-    Updates a City object
-    """
-    city = storage.get(City, city_id)
-    if city is None:
+def put_city(city_id):
+    city = storage.all(City)
+    id = f"City.{city_id}"
+    if id not in city:
         abort(404)
-    req_json = request.get_json()
-    if req_json is None:
+    data = request.get_json()
+    if not data:
         abort(400, 'Not a JSON')
-    ignore_keys = ['id', 'state_id', 'created_at', 'updated_at']
-    for key, value in req_json.items():
-        if key not in ignore_keys:
-            setattr(city, key, value)
+    i = city[id]
+    j = i.__dict__
+    for d in data:
+        if d not in ["id", "created_at",
+                     "updated_at"]:
+            j[d] = data[d]
     storage.save()
-    return jsonify(city.to_dict()), 200
+    return jsonify(j), 200
