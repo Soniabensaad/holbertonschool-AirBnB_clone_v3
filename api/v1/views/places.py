@@ -10,7 +10,8 @@ from models.place import Place
 from models.user import User
 
 
-@app_views.route('/cities/<city_id>/places', methods=['GET'], strict_slashes=False)
+@app_views.route('/cities/<city_id>/places',
+                  methods=['GET'], strict_slashes=False)
 def places(city_id):
     """Retrieves the list of all Place objects of a City"""
     city = storage.all(City)
@@ -32,7 +33,6 @@ def get_place(place_id):
         abort(404)
     p = place[id]
     return jsonify(p.to_dict())
-
 
 @app_views.route('/places/<place_id>', methods=['DELETE'], strict_slashes=False)
 def delete_place(place_id):
