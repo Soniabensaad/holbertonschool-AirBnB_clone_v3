@@ -70,5 +70,5 @@ def put(state_id):
                      "updated_at"]:
             state_d[a] = data[a]
         storage.save()
-    return jsonify(state_d, 200)
+    return jsonify(state.to_dict(), 200)
     
